@@ -1,188 +1,491 @@
 
-:root {
-    --bg: #080b19;
-    --panel: #131a31;
-    --panel2: #1a2340;
-    --text: #f5f5ff;
-    --muted: #aeb8d1;
-    --purple: #a78bfa;
-    --blue: #38bdf8;
-    --border: #303b62;
+// QUANTUMVERSE - MAIN JAVASCRIPT
+
+const $ = id => document.getElementById(id);
+const load = (key, fallback) => {
+    try {
+        return JSON.parse(localStorage.getItem(key)) ?? fallback;
+    } catch {
+        return fallback;
+    }
+};
+const save = (key, value) =>
+    localStorage.setItem(key, JSON.stringify(value));
+
+// DASHBOARD AND LEARNING PROGRESS
+let completed = load("qvCompleted", []);
+let bestScore = load("qvBest", 0);
+let gateCount = load("qvGates", 0);
+let learner = load("qvLearner", null);
+let quizPassed = load("qvQuizPassed", false);
+
+function updateDashboard() {
+    $("completedCount").textContent = completed.length;
+    $("quizBest").textContent = bestScore;
+    $("gateCount").textContent = gateCount;
+    $("userName").textContent = learner ? learner.name : "Guest";
+
+    let percent = Math.round(completed.length / 6 * 100);
+    $("progressText").textContent = percent + "%";
+    $("progressBar").style.width = percent + "%";
+
+    $("certificateBtn").disabled = !quizPassed;
+    $("certificateStatus").textContent = quizPassed
+        ? "Quiz completed! Your certificate is ready."
+        : "Complete the quiz to unlock your certificate.";
+
+    document.querySelectorAll(".topic").forEach(card => {
+        let name = card.dataset.title;
+        let btn = card.querySelector("button");
+        if (completed.includes(name)) {
+            btn.textContent = "✓ Completed";
+            btn.disabled = true;
+        }
+    });
 }
-* { box-sizing: border-box; scroll-behavior: smooth; }
-body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Arial, sans-serif;
-    transition: .3s;
+
+function completeTopic(name) {
+    if (!completed.includes(name)) {
+        completed.push(name);
+        save("qvCompleted", completed);
+        updateDashboard();
+    }
 }
-body.light {
-    --bg: #eef1ff;
-    --panel: #ffffff;
-    --panel2: #e5eaff;
-    --text: #17203b;
-    --muted: #53617e;
-    --border: #c5cdea;
+
+// TOPIC SEARCH
+$("topicSearch").addEventListener("input", function () {
+    let query = this.value.toLowerCase();
+    document.querySelectorAll(".topic").forEach(card => {
+        card.style.display =
+            card.dataset.title.toLowerCase().includes(query)
+                ? "" : "none";
+    });
+});
+
+// ACCOUNT DEMO
+$("accountBtn").addEventListener("click", () => {
+    $("accountModal").classList.add("show");
+});
+
+function closeAccount() {
+    $("accountModal").classList.remove("show");
 }
-.topbar {
-    position: sticky;
-    top: 0;
-    z-index: 20;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 16px 5%;
-    background: var(--panel);
-    border-bottom: 1px solid var(--border);
+
+function saveAccount() {
+    let name = $("accountName").value.trim();
+    let email = $("accountEmail").value.trim();
+
+    if (!name || !email || !email.includes("@")) {
+        alert("Enter a valid name and email address.");
+        return;
+    }
+
+    learner = { name, email };
+    save("qvLearner", learner);
+    $("accountBtn").textContent = "My Account";
+    closeAccount();
+    updateDashboard();
 }
-.brand { color: var(--purple); font-size: 22px; font-weight: bold; text-decoration: none; }
-nav { display: flex; flex-wrap: wrap; gap: 15px; }
-nav a { color: var(--text); text-decoration: none; font-size: 13px; }
-nav a:hover { color: var(--blue); }
-.top-actions { display: flex; gap: 8px; }
-button, .primary-btn, .secondary-btn {
-    border: 0;
-    border-radius: 8px;
-    padding: 11px 17px;
-    color: white;
-    background: linear-gradient(100deg, #7c3aed, #2563eb);
-    cursor: pointer;
-    font-weight: bold;
-    transition: .2s;
+
+function openAccountIfNeeded() {
+    if (!learner) {
+        $("accountModal").classList.add("show");
+    } else {
+        $("accountName").value = learner.name;
+        $("accountEmail").value = learner.email;
+        $("accountModal").classList.add("show");
+    }
 }
-button:hover, .primary-btn:hover, .secondary-btn:hover { transform: translateY(-2px); opacity: .88; }
-button:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-.small-btn { padding: 9px 12px; }
-.secondary-btn { background: #303b62; }
-.hero {
-    min-height: 570px;
-    padding: 75px 9%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 40px;
-    background: radial-gradient(circle at 80% 40%, #30206d, transparent 40%);
+$("accountBtn").addEventListener("dblclick", openAccountIfNeeded);
+
+// THEME SWITCH
+$("themeBtn").addEventListener("click", () => {
+    document.body.classList.toggle("light");
+    let light = document.body.classList.contains("light");
+    $("themeBtn").textContent = light ? "🌙" : "☀️";
+    save("qvTheme", light);
+});
+
+if (load("qvTheme", false)) {
+    document.body.classList.add("light");
+    $("themeBtn").textContent = "🌙";
 }
-.hero-content { max-width: 650px; }
-.eyebrow { color: var(--blue); font-size: 12px; letter-spacing: 3px; font-weight: bold; }
-.hero h1 { font-size: clamp(38px, 6vw, 65px); line-height: 1.15; margin: 20px 0; }
-.hero h1 span { color: var(--purple); text-shadow: 0 0 25px #7c3aed; }
-.hero p { color: var(--muted); line-height: 1.8; max-width: 550px; }
-.hero-stats { display: flex; gap: 35px; margin-top: 35px; }
-.hero-stats div { display: grid; gap: 5px; }
-.hero-stats strong { font-size: 23px; color: var(--blue); }
-.hero-stats small { color: var(--muted); }
-.hero-visual { width: 280px; height: 280px; position: relative; display: grid; place-items: center; margin: auto; }
-.quantum-core { font-size: 100px; color: var(--purple); text-shadow: 0 0 45px #8b5cf6; z-index: 2; }
-.orbit { position: absolute; width: 260px; height: 105px; border: 2px solid var(--blue); border-radius: 50%; transform: rotate(35deg); box-shadow: 0 0 18px #2563eb; }
-.orbit-two { transform: rotate(-35deg); border-color: var(--purple); }
-.floating { position: absolute; color: var(--blue); font-size: 25px; }
-.f-one { top: 0; left: 50px; }
-.f-two { right: 0; bottom: 40px; }
-.f-three { left: 10px; bottom: 60px; color: var(--purple); }
-.section { padding: 75px 8%; }
-.alternate { background: var(--panel); }
-.section-heading { text-align: center; margin-bottom: 35px; }
-.section-heading h2 { font-size: 32px; margin: 12px 0; }
-.section-heading p, .hint { color: var(--muted); line-height: 1.7; }
-.dashboard-grid, .cards, .algorithm-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 20px;
+
+// QUBIT LAB
+function updateQubit() {
+    let theta = Number($("theta").value);
+    let phi = Number($("phi").value);
+
+    $("thetaValue").textContent = theta + "°";
+    $("phiValue").textContent = phi + "°";
+
+    let p0 = Math.cos(theta * Math.PI / 360) ** 2;
+    let p1 = 1 - p0;
+
+    $("pZero").textContent = (p0 * 100).toFixed(1) + "%";
+    $("pOne").textContent = (p1 * 100).toFixed(1) + "%";
+    $("pZeroBar").style.width = (p0 * 100) + "%";
+    $("pOneBar").style.width = (p1 * 100) + "%";
+
+    $("stateArrow").style.transform =
+        `rotate(${theta}deg) rotateY(${phi}deg)`;
+    $("measureResult").textContent = "State updated. Ready to measure.";
 }
-.stat-card, .card, .panel, .progress-card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    padding: 23px;
+
+$("theta").addEventListener("input", updateQubit);
+$("phi").addEventListener("input", updateQubit);
+
+function measureQubit() {
+    let p0 = Number($("pZero").textContent.replace("%", "")) / 100;
+    let outcome = Math.random() < p0 ? "0" : "1";
+    $("measureResult").textContent =
+        "Measurement result: |" + outcome + "⟩";
 }
-.stat-card span { font-size: 26px; }
-.stat-card h3 { font-size: 26px; color: var(--purple); margin: 10px 0; overflow-wrap: anywhere; }
-.stat-card p, .card p, .panel p { color: var(--muted); line-height: 1.7; }
-.progress-card { margin-top: 20px; }
-.row-between { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-.progress-track { height: 9px; background: var(--border); border-radius: 20px; overflow: hidden; margin: 12px 0; }
-.progress-track div { height: 100%; width: 0; background: linear-gradient(90deg, #8b5cf6, #38bdf8); transition: .3s; }
-.card { background: var(--panel2); }
-.card h3 { color: var(--purple); }
-.card-icon { font-size: 30px; }
-.card button { margin-top: 12px; }
-.search, input, select {
-    width: 100%;
-    padding: 12px;
-    margin: 10px 0 18px;
-    background: var(--panel2);
-    color: var(--text);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+
+function resetQubit() {
+    $("theta").value = 0;
+    $("phi").value = 0;
+    updateQubit();
+    $("measureResult").textContent = "Reset to |0⟩.";
 }
-.lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-.panel h3 { margin-top: 5px; }
-.panel label { display: block; margin-top: 20px; }
-.panel input[type=range] { accent-color: var(--purple); }
-.sphere-panel { text-align: center; }
-.bloch { width: 240px; height: 240px; margin: 30px auto; position: relative; border: 1px solid var(--blue); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #303d80, #12152c 65%); box-shadow: inset -15px -12px 35px #080b19, 0 0 30px #5434a5; }
-.sphere-ball { position: absolute; inset: 12%; border: 1px solid #8794f7; border-radius: 50%; }
-.sphere-equator { position: absolute; top: 39%; left: 0; width: 100%; height: 22%; border: 1px solid var(--blue); border-radius: 50%; transform: rotate(-25deg); }
-.sphere-axis { position: absolute; background: #aeb8d1; opacity: .65; }
-.axis-x { height: 1px; width: 100%; top: 50%; }
-.axis-y { width: 1px; height: 100%; left: 50%; }
-.axis-z { width: 1px; height: 100%; left: 50%; transform: rotate(55deg); }
-.state-arrow { position: absolute; height: 85px; width: 3px; background: #f472b6; left: 50%; top: 50%; transform-origin: top; transform: rotate(0deg); box-shadow: 0 0 12px #f472b6; z-index: 3; }
-.state-arrow:after { content: ""; position: absolute; top: 0; left: -5px; border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 12px solid #f472b6; }
-.sphere-label { position: absolute; color: white; font-size: 13px; }
-.label-zero { top: 5px; left: 48%; }
-.label-one { bottom: 5px; left: 48%; }
-.label-x { top: 50%; right: 5px; }
-.label-y { top: 50%; left: 5px; }
-.probability-box { margin: 22px 0; }
-.probability-box p { display: flex; justify-content: space-between; }
-.probability-box strong { color: var(--blue); }
-.gate-panel { max-width: 900px; margin: auto; }
-.gate-buttons { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0; }
-.circuit-line { display: flex; align-items: center; gap: 12px; padding: 22px 0; border-bottom: 2px solid var(--blue); flex-wrap: wrap; }
-.circuit-gates { display: flex; gap: 8px; flex-wrap: wrap; }
-.gate-chip { padding: 12px; background: #6d40bd; border-radius: 7px; min-width: 42px; text-align: center; }
-.state-output { background: var(--panel2); padding: 20px; border-radius: 10px; margin-top: 20px; overflow-wrap: anywhere; }
-.state-output h3 { color: var(--blue); }
-.entangle-panel { text-align: center; max-width: 700px; margin: auto; }
-.bell-circuit { display: flex; align-items: center; justify-content: center; gap: 25px; margin: 30px; }
-.particle { background: #4c1d95; border: 2px solid var(--purple); padding: 28px 18px; border-radius: 50%; box-shadow: 0 0 25px #7c3aed; }
-.entangle-link { color: var(--blue); font-size: 35px; }
-.algorithm-grid .panel { min-width: 0; }
-.result { color: var(--blue); font-weight: bold; margin: 18px 0; line-height: 1.7; }
-.bar-row { display: grid; grid-template-columns: 60px 1fr 50px; align-items: center; gap: 8px; margin: 12px 0; }
-.bar-track { background: var(--border); height: 12px; border-radius: 20px; overflow: hidden; }
-.bar-track div { height: 100%; background: linear-gradient(90deg, #8b5cf6, #38bdf8); }
-.quiz-panel { max-width: 700px; margin: auto; }
-.quiz-panel h3 { margin: 25px 0; }
-.answer-options { display: grid; gap: 12px; }
-.answer-options button { text-align: left; background: var(--panel2); border: 1px solid var(--border); }
-.answer-options button.selected { outline: 2px solid var(--blue); }
-.answer-options button.correct { background: #166534; }
-.answer-options button.wrong { background: #991b1b; }
-.certificate-panel { text-align: center; max-width: 650px; margin: auto; }
-.certificate-panel h3 { color: var(--purple); font-size: 25px; }
-footer { text-align: center; padding: 45px 20px; background: #060916; color: white; line-height: 2; }
-.modal { display: none; position: fixed; inset: 0; z-index: 40; background: #000b; align-items: center; justify-content: center; padding: 20px; }
-.modal.show { display: flex; }
-.modal-box { background: var(--panel); border: 1px solid var(--border); padding: 30px; border-radius: 15px; width: min(420px, 100%); position: relative; }
-.close-btn { position: absolute; right: 12px; top: 12px; padding: 7px 11px; }
-@media(max-width: 800px) {
-    .topbar { justify-content: center; }
-    nav { justify-content: center; }
-    .hero { text-align: center; justify-content: center; }
-    .hero-stats { justify-content: center; }
-    .section { padding: 55px 5%; }
+
+// COMPLEX NUMBER HELPERS FOR GATE SIMULATOR
+const C = (re, im = 0) => ({ re, im });
+
+function add(a, b) {
+    return C(a.re + b.re, a.im + b.im);
 }
-@media(max-width: 480px) {
-    .hero-stats { gap: 15px; }
-    .hero-visual { transform: scale(.85); }
-    .section-heading h2 { font-size: 26px; }
-    .bell-circuit { gap: 10px; margin: 20px 0; }
-    .particle { padding: 20px 12px; }
+function mul(a, b) {
+    return C(a.re * b.re - a.im * b.im,
+             a.re * b.im + a.im * b.re);
+}
+function scale(a, n) {
+    return C(a.re * n, a.im * n);
+}
+function magnitude(a) {
+    return Math.hypot(a.re, a.im);
+}
+function formatComplex(a) {
+    return a.re.toFixed(2) +
+        (a.im >= 0 ? " + " : " - ") +
+        Math.abs(a.im).toFixed(2) + "i";
+}
+
+let alpha = C(1);
+let beta = C(0);
+let circuit = [];
+
+function applyMatrix(gate, a, b) {
+    let s = 1 / Math.sqrt(2);
+
+    if (gate === "X") return [b, a];
+
+    if (gate === "Y") {
+        return [C(b.im, -b.re), C(-a.im, a.re)];
+    }
+
+    if (gate === "Z") {
+        return [a, C(-b.re, -b.im)];
+    }
+
+    if (gate === "H") {
+        return [
+            scale(add(a, b), s),
+            scale(add(a, C(-b.re, -b.im)), s)
+        ];
+    }
+
+    return [a, b];
+}
+
+function addGate(name) {
+    [alpha, beta] = applyMatrix(name, alpha, beta);
+    circuit.push(name);
+    gateCount++;
+    save("qvGates", gateCount);
+    updateCircuit();
+    updateDashboard();
+}
+
+function updateCircuit() {
+    $("circuitGates").innerHTML = circuit.length
+        ? circuit.map(g => `<span class="gate-chip">${g}</span>`).join("")
+        : "No gates added";
+
+    let p0 = magnitude(alpha) ** 2;
+    let p1 = magnitude(beta) ** 2;
+
+    $("circuitState").textContent =
+        "|ψ⟩ = (" + formatComplex(alpha) + ")|0⟩ + (" +
+        formatComplex(beta) + ")|1⟩";
+
+    $("circuitProb").textContent =
+        "P(0) = " + (p0 * 100).toFixed(1) +
+        "% | P(1) = " + (p1 * 100).toFixed(1) + "%";
+
+    $("circuitExplanation").textContent =
+        circuit.length
+        ? circuit.join(" → ") + " applied successfully."
+        : "Initial state is |0⟩.";
+}
+
+function resetCircuit() {
+    alpha = C(1);
+    beta = C(0);
+    circuit = [];
+    updateCircuit();
+}
+
+// BELL STATE ENTANGLEMENT DEMO
+let bellCount = 0, bell00 = 0, bell11 = 0;
+
+function measureBell() {
+    let result = Math.random() < 0.5 ? "00" : "11";
+
+    bellCount++;
+    if (result === "00") bell00++;
+    else bell11++;
+
+    $("bellResult").textContent =
+        "Measurement result: |" + result + "⟩";
+
+    $("bellStats").textContent =
+        `Measurements: ${bellCount} | 00: ${bell00} | 11: ${bell11}`;
+}
+
+function resetBell() {
+    bellCount = bell00 = bell11 = 0;
+    $("bellResult").textContent = "Waiting for measurement...";
+    $("bellStats").textContent = "Measurements: 0 | 00: 0 | 11: 0";
+}
+
+// GROVER SEARCH: TWO-QUBIT STATE VECTOR
+function runGrover() {
+    let target = Number($("targetItem").value);
+    let state = [0.5, 0.5, 0.5, 0.5];
+
+    // Oracle phase flip
+    state[target] *= -1;
+
+    // Diffusion operator
+    let mean = state.reduce((sum, x) => sum + x, 0) / 4;
+    state = state.map(x => 2 * mean - x);
+
+    let probabilities = state.map(x => x * x);
+    let success = probabilities[target] * 100;
+
+    $("groverResult").textContent =
+        `Target: Item ${target}. Success probability: ${success.toFixed(1)}%`;
+
+    $("groverBars").innerHTML = probabilities.map((p, i) => `
+        <div class="bar-row">
+            <span>Item ${i}</span>
+            <div class="bar-track">
+                <div style="width:${p * 100}%"></div>
+            </div>
+            <strong>${(p * 100).toFixed(0)}%</strong>
+        </div>
+    `).join("");
+}
+
+// SMALL INTEGER FACTORIZATION DEMO
+function factorNumber() {
+    let n = Number($("factorNumber").value);
+
+    if (!Number.isInteger(n) || n < 4 || n > 100) {
+        $("factorResult").textContent =
+            "Enter a whole number between 4 and 100.";
+        return;
+    }
+
+    for (let i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) {
+            $("factorResult").textContent =
+                `${n} = ${i} × ${n / i}`;
+            return;
+        }
+    }
+
+    $("factorResult").textContent =
+        `${n} is a prime number. No smaller factors found.`;
+}
+
+// 20 QUESTION QUIZ
+const questions = [
+    ["What is the basic unit of quantum information?", ["Bit", "Qubit", "Byte", "Pixel"], 1],
+    ["Which gate creates equal superposition from |0⟩?", ["X", "Z", "H", "Y"], 2],
+    ["Which gate flips |0⟩ and |1⟩?", ["X", "H", "Z", "S"], 0],
+    ["What does measurement produce?", ["Only a graph", "Classical outcome", "New qubit", "A gate"], 1],
+    ["Which symbol represents a qubit state?", ["ψ", "HTML", "SQL", "CPU"], 0],
+    ["What is entanglement?", ["File sharing", "Quantum correlation", "Sorting", "Encryption key"], 1],
+    ["Which gate changes the phase of |1⟩?", ["X", "H", "Z", "CNOT"], 2],
+    ["What is the output of X applied to |0⟩?", ["|0⟩", "|1⟩", "|+⟩", "|−⟩"], 1],
+    ["What is the Hadamard gate commonly used for?", ["Deleting data", "Superposition", "Cooling", "Sorting"], 1],
+    ["What is a quantum circuit?", ["A sequence of quantum gates", "A battery", "A web page", "A file"], 0],
+    ["What does a Bloch sphere represent?", ["Qubit state", "CPU speed", "Network", "Database"], 0],
+    ["What is P(0) for an equal superposition?", ["0%", "25%", "50%", "100%"], 2],
+    ["Which algorithm is associated with quantum search?", ["Grover", "Bubble sort", "Dijkstra", "Merge sort"], 0],
+    ["Which algorithm is associated with integer factoring?", ["Grover", "Shor", "DFS", "BFS"], 1],
+    ["Can an unknown quantum state be perfectly copied?", ["Yes", "No", "Always", "Only on a laptop"], 1],
+    ["What is a classical bit?", ["0 or 1", "All numbers at once", "A quantum gate", "A circuit"], 0],
+    ["Which gate is its own inverse?", ["H", "S", "T", "None"], 0],
+    ["What does a CNOT gate use?", ["Control and target qubits", "One file", "A database", "A sensor"], 0],
+    ["What does a quantum simulator do?", ["Models quantum behaviour", "Creates a real atom", "Repairs hardware", "Stores passwords"], 0],
+    ["What is the main purpose of this QuantumVerse lab?", ["Educational simulation", "Real quantum hardware", "Banking", "Gaming only"], 0]
+];
+
+let questionIndex = 0;
+let score = 0;
+let answered = false;
+let finished = false;
+
+function showQuestion() {
+    let q = questions[questionIndex];
+    $("questionNumber").textContent =
+        `Question ${questionIndex + 1} / ${questions.length}`;
+    $("questionText").textContent = q[0];
+    $("liveScore").textContent = "Score: " + score;
+    $("quizProgress").style.width =
+        (questionIndex / questions.length * 100) + "%";
+    $("answerFeedback").textContent = "";
+    $("nextQuestion").disabled = true;
+    $("nextQuestion").textContent =
+        questionIndex === questions.length - 1 ? "Finish Quiz" : "Next Question →";
+
+    $("answerOptions").innerHTML = "";
+
+    q[1].forEach((option, index) => {
+        let btn = document.createElement("button");
+        btn.textContent = option;
+        btn.addEventListener("click", () => chooseAnswer(index, btn));
+        $("answerOptions").appendChild(btn);
+    });
+
+    answered = false;
+}
+
+function chooseAnswer(index, selectedButton) {
+    if (answered || finished) return;
+    answered = true;
+
+    let correct = questions[questionIndex][2];
+    let buttons = $("answerOptions").querySelectorAll("button");
+
+    buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add("correct");
+    });
+
+    if (index === correct) {
+        score++;
+        $("answerFeedback").textContent = "Correct answer! 🎉";
+    } else {
+        selectedButton.classList.add("wrong");
+        $("answerFeedback").textContent =
+            "Incorrect. Correct answer: " + questions[questionIndex][1][correct];
+    }
+
+    $("liveScore").textContent = "Score: " + score;
+    $("nextQuestion").disabled = false;
+}
+
+function nextQuestion() {
+    if (!answered || finished) return;
+
+    questionIndex++;
+
+    if (questionIndex >= questions.length) {
+        finished = true;
+        let percent = Math.round(score / questions.length * 100);
+
+        if (score > bestScore) {
+            bestScore = score;
+            save("qvBest", bestScore);
+        }
+
+        quizPassed = percent >= 60;
+        save("qvQuizPassed", quizPassed);
+
+        $("questionNumber").textContent = "Quiz completed";
+        $("questionText").textContent = "Your final score";
+        $("answerOptions").innerHTML = "";
+        $("answerFeedback").textContent =
+            `${score} / ${questions.length} (${percent}%)`;
+        $("quizProgress").style.width = "100%";
+        $("nextQuestion").disabled = true;
+        $("quizFinal").textContent = quizPassed
+            ? "Congratulations! You unlocked your certificate."
+            : "Try again to score at least 60% and unlock your certificate.";
+
+        updateDashboard();
+        return;
+    }
+
+    showQuestion();
+}
+
+// QUIZ RESTART
+function restartQuiz() {
+    questionIndex = 0;
+    score = 0;
+    answered = false;
+    finished = false;
+    $("quizFinal").textContent = "";
+    showQuestion();
+}
+
+// CERTIFICATE DOWNLOAD
+function downloadCertificate() {
+    if (!quizPassed) return;
+
+    let name = learner ? learner.name : "QuantumVerse Learner";
+    let date = new Date().toLocaleDateString();
+
+    let certificate = `
+    <html>
+    <head><title>QuantumVerse Certificate</title>
+    <style>
+    body { font-family: Georgia, serif; background: #10152b; color: white;
+           display: grid; place-items: center; min-height: 90vh; }
+    .cert { border: 7px double #a78bfa; padding: 55px; text-align: center;
+            width: 75%; background: #171e3a; }
+    h1 { color: #a78bfa; font-size: 38px; }
+    h2 { color: #38bdf8; }
+    p { font-size: 18px; line-height: 2; }
+    </style></head>
+    <body><div class="cert">
+    <h2>⚛ QuantumVerse</h2>
+    <h1>Certificate of Achievement</h1>
+    <p>This certificate is presented to</p>
+    <h2>${escapeHTML(name)}</h2>
+    <p>For completing the Quantum Computing Knowledge Quiz.</p>
+    <p>Achievement: ${score} / 20</p>
+    <p>Date: ${date}</p>
+    <p>Educational Demo Certificate</p>
+    </div></body></html>`;
+
+    let blob = new Blob([certificate], { type: "text/html" });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement("a");
+    a.href = url;
+    a.download = "QuantumVerse-Certificate.html";
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
+    })[char]);
+}
+
+// INITIALIZE
+updateQubit();
+updateCircuit();
+updateDashboard();
+showQuestion();
+
+if (learner) {
+    $("accountBtn").textContent = "My Account";
 }

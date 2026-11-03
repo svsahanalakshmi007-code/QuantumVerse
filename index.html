@@ -2,154 +2,311 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumVerse | Explore Quantum Computing</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuantumVerse | Interactive Quantum Platform</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<header>
-    <div class="logo">⚛ QuantumVerse</div>
+<header class="topbar">
+    <a class="brand" href="#home">⚛ QuantumVerse</a>
     <nav>
         <a href="#home">Home</a>
         <a href="#learn">Learn</a>
         <a href="#qubit">Qubit Lab</a>
-        <a href="#gates">Gate Simulator</a>
+        <a href="#gates">Gates</a>
         <a href="#entangle">Entanglement</a>
         <a href="#algorithms">Algorithms</a>
         <a href="#quiz">Quiz</a>
     </nav>
+    <div class="top-actions">
+        <button class="small-btn" id="themeBtn">☀️</button>
+        <button class="small-btn" id="accountBtn">Login</button>
+    </div>
 </header>
 
+<main>
 <section class="hero" id="home">
     <div class="hero-content">
-        <p class="tag">WELCOME TO THE QUANTUM WORLD</p>
-        <h1>Explore the Future of<br><span>Quantum Computing</span></h1>
-        <p>Discover qubits, quantum gates, superposition,
-           entanglement and powerful quantum algorithms.</p>
-        <a href="#learn" class="btn">Start Exploring →</a>
+        <span class="eyebrow">THE QUANTUM LEARNING EXPERIENCE</span>
+        <h1>Explore the <span>Quantum</span><br>Universe.</h1>
+        <p>Learn quantum concepts, experiment with qubits,
+           build circuits and explore algorithms through interactive simulations.</p>
+        <a href="#learn" class="primary-btn">Start Exploring →</a>
+        <div class="hero-stats">
+            <div><strong>20+</strong><small>Quiz questions</small></div>
+            <div><strong>4</strong><small>Quantum gates</small></div>
+            <div><strong>6</strong><small>Learning modules</small></div>
+        </div>
     </div>
-    <div class="atom">⚛</div>
-</section>
-
-<section id="learn" class="section">
-    <p class="tag">START LEARNING</p>
-    <h2>Quantum Computing Basics</h2>
-    <div class="cards">
-        <div class="card">
-            <h3>⚛ Qubit</h3>
-            <p>A qubit is the basic unit of quantum information.
-            It can represent a combination of 0 and 1.</p>
-        </div>
-        <div class="card">
-            <h3>🌌 Superposition</h3>
-            <p>A quantum state can exist in a combination
-            of multiple possible states until measured.</p>
-        </div>
-        <div class="card">
-            <h3>🔗 Entanglement</h3>
-            <p>Two or more qubits can share connected
-            quantum states, even when separated.</p>
-        </div>
-        <div class="card">
-            <h3>📡 Measurement</h3>
-            <p>Measurement gives a classical result such
-            as 0 or 1 from a quantum state.</p>
-        </div>
+    <div class="hero-visual">
+        <div class="orbit orbit-one"></div>
+        <div class="orbit orbit-two"></div>
+        <div class="quantum-core">⚛</div>
+        <span class="floating f-one">|0⟩</span>
+        <span class="floating f-two">|1⟩</span>
+        <span class="floating f-three">ψ</span>
     </div>
 </section>
 
-<section id="qubit" class="section dark-section">
-    <p class="tag">INTERACTIVE EXPERIMENT</p>
-    <h2>Qubit Lab</h2>
-    <p>Adjust the slider to change the probability of measuring 0 or 1.</p>
+<section class="section" id="dashboard">
+    <div class="section-heading">
+        <span class="eyebrow">YOUR LEARNING SPACE</span>
+        <h2>Learning Dashboard</h2>
+    </div>
+    <div class="dashboard-grid">
+        <div class="stat-card">
+            <span>📚</span><h3 id="completedCount">0</h3>
+            <p>Topics completed</p>
+        </div>
+        <div class="stat-card">
+            <span>🧠</span><h3 id="quizBest">0</h3>
+            <p>Best quiz score</p>
+        </div>
+        <div class="stat-card">
+            <span>⚛</span><h3 id="gateCount">0</h3>
+            <p>Gate operations</p>
+        </div>
+        <div class="stat-card">
+            <span>🎯</span><h3 id="userName">Guest</h3>
+            <p>Current learner</p>
+        </div>
+    </div>
+    <div class="progress-card">
+        <div class="row-between">
+            <h3>Learning progress</h3>
+            <strong id="progressText">0%</strong>
+        </div>
+        <div class="progress-track"><div id="progressBar"></div></div>
+    </div>
+</section>
 
-    <div class="lab">
-        <div class="sphere">|ψ⟩</div>
-        <div class="controls">
-            <label>Probability of |0⟩</label>
-            <input type="range" id="probability" min="0" max="100" value="50">
-            <h3 id="probValue">50%</h3>
-            <p id="zeroProb">P(0) = 50%</p>
-            <p id="oneProb">P(1) = 50%</p>
-            <button onclick="measureQubit()">Measure Qubit</button>
-            <h3 id="measurement">Measurement: Not measured</h3>
+<section class="section" id="learn">
+    <div class="section-heading">
+        <span class="eyebrow">BUILD YOUR KNOWLEDGE</span>
+        <h2>Explore Quantum Concepts</h2>
+        <p>Choose a topic and mark it complete after learning.</p>
+    </div>
+    <input id="topicSearch" class="search" placeholder="Search quantum topics...">
+    <div class="cards" id="topicCards">
+        <article class="card topic" data-title="Qubit">
+            <span class="card-icon">⚛</span>
+            <h3>Qubit</h3>
+            <p>The basic unit of quantum information. Unlike a classical bit, it can represent a quantum state.</p>
+            <button onclick="completeTopic('Qubit')">Mark as completed</button>
+        </article>
+        <article class="card topic" data-title="Superposition">
+            <span class="card-icon">🌌</span>
+            <h3>Superposition</h3>
+            <p>A quantum state can be a combination of basis states before measurement.</p>
+            <button onclick="completeTopic('Superposition')">Mark as completed</button>
+        </article>
+        <article class="card topic" data-title="Entanglement">
+            <span class="card-icon">🔗</span>
+            <h3>Entanglement</h3>
+            <p>Quantum systems can share correlations that have no classical equivalent.</p>
+            <button onclick="completeTopic('Entanglement')">Mark as completed</button>
+        </article>
+        <article class="card topic" data-title="Measurement">
+            <span class="card-icon">📡</span>
+            <h3>Measurement</h3>
+            <p>Measurement returns a classical outcome based on quantum probabilities.</p>
+            <button onclick="completeTopic('Measurement')">Mark as completed</button>
+        </article>
+        <article class="card topic" data-title="Quantum Gates">
+            <span class="card-icon">🔮</span>
+            <h3>Quantum Gates</h3>
+            <p>Operations that transform quantum states using unitary matrices.</p>
+            <button onclick="completeTopic('Quantum Gates')">Mark as completed</button>
+        </article>
+        <article class="card topic" data-title="Algorithms">
+            <span class="card-icon">🧮</span>
+            <h3>Algorithms</h3>
+            <p>Quantum algorithms use quantum operations to solve specific computational tasks.</p>
+            <button onclick="completeTopic('Algorithms')">Mark as completed</button>
+        </article>
+    </div>
+</section>
+
+<section class="section alternate" id="qubit">
+    <div class="section-heading">
+        <span class="eyebrow">INTERACTIVE EXPERIMENT</span>
+        <h2>Qubit Lab</h2>
+        <p>Prepare a qubit state and observe its measurement probabilities.</p>
+    </div>
+    <div class="lab-grid">
+        <div class="panel sphere-panel">
+            <h3>Bloch Sphere View</h3>
+            <div class="bloch">
+                <div class="sphere-ball"></div>
+                <div class="sphere-equator"></div>
+                <div class="sphere-axis axis-x"></div>
+                <div class="sphere-axis axis-y"></div>
+                <div class="sphere-axis axis-z"></div>
+                <div class="state-arrow" id="stateArrow"></div>
+                <span class="sphere-label label-zero">|0⟩</span>
+                <span class="sphere-label label-one">|1⟩</span>
+                <span class="sphere-label label-x">X</span>
+                <span class="sphere-label label-y">Y</span>
+            </div>
+            <p class="hint">Visual representation of the selected qubit state.</p>
+        </div>
+        <div class="panel">
+            <h3>State Controls</h3>
+            <label for="theta">Theta (θ): <strong id="thetaValue">90°</strong></label>
+            <input type="range" id="theta" min="0" max="180" value="90">
+            <label for="phi">Phi (φ): <strong id="phiValue">0°</strong></label>
+            <input type="range" id="phi" min="0" max="360" value="0">
+            <div class="probability-box">
+                <p>Probability of |0⟩ <strong id="pZero">50%</strong></p>
+                <div class="progress-track"><div id="pZeroBar"></div></div>
+                <p>Probability of |1⟩ <strong id="pOne">50%</strong></p>
+                <div class="progress-track"><div id="pOneBar"></div></div>
+            </div>
+            <button class="primary-btn" onclick="measureQubit()">Measure Qubit</button>
+            <button class="secondary-btn" onclick="resetQubit()">Reset State</button>
+            <h3 id="measureResult" class="result">Waiting for measurement...</h3>
         </div>
     </div>
 </section>
 
-<section id="gates" class="section">
-    <p class="tag">QUANTUM OPERATIONS</p>
-    <h2>Quantum Gate Simulator</h2>
-    <p>Apply a gate and observe the simulated qubit state.</p>
-    <div class="gate-box">
-        <h3 id="gateState">Current State: |0⟩</h3>
+<section class="section" id="gates">
+    <div class="section-heading">
+        <span class="eyebrow">BUILD A QUANTUM CIRCUIT</span>
+        <h2>Quantum Gate Simulator</h2>
+        <p>Apply gates to a single qubit and see the calculated state.</p>
+    </div>
+    <div class="panel gate-panel">
+        <div class="row-between">
+            <h3>Single Qubit Circuit</h3>
+            <button class="secondary-btn" onclick="resetCircuit()">Reset Circuit</button>
+        </div>
         <div class="gate-buttons">
-            <button onclick="applyGate('X')">X Gate</button>
-            <button onclick="applyGate('Y')">Y Gate</button>
-            <button onclick="applyGate('Z')">Z Gate</button>
-            <button onclick="applyGate('H')">H Gate</button>
-            <button onclick="resetGate()">Reset</button>
+            <button onclick="addGate('H')">H Gate</button>
+            <button onclick="addGate('X')">X Gate</button>
+            <button onclick="addGate('Y')">Y Gate</button>
+            <button onclick="addGate('Z')">Z Gate</button>
         </div>
-        <p id="gateResult">Choose a gate to begin.</p>
+        <div class="circuit-line">
+            <span>Input |0⟩</span>
+            <div id="circuitGates" class="circuit-gates">No gates added</div>
+            <span>Output</span>
+        </div>
+        <div class="state-output">
+            <h3 id="circuitState">|ψ⟩ = 1.00|0⟩ + 0.00|1⟩</h3>
+            <p id="circuitProb">P(0) = 100% | P(1) = 0%</p>
+            <p id="circuitExplanation">Initial state is |0⟩.</p>
+        </div>
+        <p class="hint">Uses single-qubit complex state-vector calculations.</p>
     </div>
 </section>
 
-<section id="entangle" class="section dark-section">
-    <p class="tag">CONNECTED QUANTUM STATES</p>
-    <h2>Entanglement Lab</h2>
-    <div class="entangle-box">
-        <div class="particle">Qubit A</div>
-        <div class="connection">⟷</div>
-        <div class="particle">Qubit B</div>
+<section class="section alternate" id="entangle">
+    <div class="section-heading">
+        <span class="eyebrow">TWO QUBIT EXPERIMENT</span>
+        <h2>Entanglement Lab</h2>
+        <p>Create a Bell state and measure both qubits.</p>
     </div>
-    <p>Bell State: |Φ+⟩ = (|00⟩ + |11⟩) / √2</p>
-    <button onclick="measureBell()">Measure Bell State</button>
-    <h3 id="bellResult">Waiting for measurement...</h3>
-</section>
-
-<section id="algorithms" class="section">
-    <p class="tag">QUANTUM ALGORITHMS</p>
-    <h2>Explore Algorithms</h2>
-    <div class="cards">
-        <div class="card">
-            <h3>Grover's Algorithm</h3>
-            <p>Searches an unstructured database faster
-            than classical brute-force search in the ideal query model.</p>
-            <button onclick="runGrover()">Run Demo</button>
-            <p id="groverResult">Demo not started.</p>
+    <div class="panel entangle-panel">
+        <div class="bell-circuit">
+            <div class="particle">Qubit A</div>
+            <div class="entangle-link">⟷</div>
+            <div class="particle">Qubit B</div>
         </div>
-        <div class="card">
-            <h3>Shor's Algorithm</h3>
-            <p>A quantum algorithm designed to factor
-            large integers efficiently.</p>
-            <p class="small">Concept demonstration only.</p>
-        </div>
+        <h3>Bell State: |Φ+⟩ = (|00⟩ + |11⟩) / √2</h3>
+        <p>Each measurement produces 00 or 11 with equal probability.</p>
+        <button class="primary-btn" onclick="measureBell()">Measure Bell Pair</button>
+        <h2 id="bellResult" class="result">Waiting for measurement...</h2>
+        <p id="bellStats">Measurements: 0 | 00: 0 | 11: 0</p>
+        <button class="secondary-btn" onclick="resetBell()">Reset Measurements</button>
     </div>
 </section>
 
-<section id="quiz" class="section dark-section">
-    <p class="tag">TEST YOUR KNOWLEDGE</p>
-    <h2>Quantum Quiz</h2>
-    <div class="quiz-box">
-        <h3 id="question">1. What is the basic unit of quantum information?</h3>
-        <div id="answers">
-            <button onclick="checkAnswer(0)">Bit</button>
-            <button onclick="checkAnswer(1)">Qubit</button>
-            <button onclick="checkAnswer(2)">Byte</button>
+<section class="section" id="algorithms">
+    <div class="section-heading">
+        <span class="eyebrow">QUANTUM COMPUTATION</span>
+        <h2>Algorithm Playground</h2>
+        <p>Explore simplified interactive algorithm demonstrations.</p>
+    </div>
+    <div class="algorithm-grid">
+        <div class="panel">
+            <h3>🔍 Grover Search</h3>
+            <p>Search for a marked item among four possibilities using a two-qubit state-vector simulation.</p>
+            <label for="targetItem">Choose target item</label>
+            <select id="targetItem">
+                <option value="0">Item 0</option>
+                <option value="1">Item 1</option>
+                <option value="2" selected>Item 2</option>
+                <option value="3">Item 3</option>
+            </select>
+            <button class="primary-btn" onclick="runGrover()">Run Grover Demo</button>
+            <div id="groverResult" class="result">Choose a target and run.</div>
+            <div id="groverBars"></div>
         </div>
-        <h3 id="quizResult"></h3>
-        <button onclick="nextQuestion()">Next Question →</button>
-        <p id="score">Score: 0</p>
+        <div class="panel">
+            <h3>🔢 Shor Factor Demo</h3>
+            <p>Try a small composite number. This is a classical factor demonstration inspired by the factoring problem, not a quantum Shor circuit.</p>
+            <label for="factorNumber">Enter a number (4–100)</label>
+            <input type="number" id="factorNumber" min="4" max="100" value="15">
+            <button class="primary-btn" onclick="factorNumber()">Find Factors</button>
+            <div id="factorResult" class="result">Enter a composite number.</div>
+        </div>
     </div>
 </section>
+
+<section class="section alternate" id="quiz">
+    <div class="section-heading">
+        <span class="eyebrow">TEST YOUR KNOWLEDGE</span>
+        <h2>Quantum Knowledge Quiz</h2>
+        <p>Answer 20 questions and check your score.</p>
+    </div>
+    <div class="panel quiz-panel">
+        <div class="row-between">
+            <span id="questionNumber">Question 1 / 20</span>
+            <span id="liveScore">Score: 0</span>
+        </div>
+        <div class="progress-track"><div id="quizProgress"></div></div>
+        <h3 id="questionText">Loading question...</h3>
+        <div id="answerOptions" class="answer-options"></div>
+        <p id="answerFeedback" class="result"></p>
+        <button class="primary-btn" id="nextQuestion" onclick="nextQuestion()" disabled>Next Question →</button>
+        <div id="quizFinal"></div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="section-heading">
+        <span class="eyebrow">YOUR ACHIEVEMENT</span>
+        <h2>Learning Certificate</h2>
+        <p>Complete the quiz to unlock your demo certificate.</p>
+    </div>
+    <div class="panel certificate-panel">
+        <h3>🏆 QuantumVerse Achievement</h3>
+        <p id="certificateStatus">Complete the quiz to unlock your certificate.</p>
+        <button class="primary-btn" id="certificateBtn" onclick="downloadCertificate()" disabled>Download Certificate</button>
+    </div>
+</section>
+
+</main>
 
 <footer>
-    <h3>⚛ QuantumVerse</h3>
+    <h2>⚛ QuantumVerse</h2>
     <p>Explore • Experiment • Understand</p>
-    <p>Educational quantum simulation platform</p>
+    <p>Educational browser-based quantum simulation platform.</p>
+    <p class="hint">Simulated results are for learning and demonstration only.</p>
 </footer>
+
+<div class="modal" id="accountModal">
+    <div class="modal-box">
+        <button class="close-btn" onclick="closeAccount()">✕</button>
+        <h2 id="accountTitle">Learner Login</h2>
+        <input id="accountName" placeholder="Your name">
+        <input id="accountEmail" type="email" placeholder="Email address">
+        <button class="primary-btn" onclick="saveAccount()">Continue</button>
+        <p class="hint">Demo account: information is saved only in this browser.</p>
+    </div>
+</div>
 
 <script src="script.js"></script>
 </body>

@@ -1,0 +1,288 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #080b1b;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: #10152b;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.logo {
+    color: #a78bfa;
+    font-size: 23px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+}
+
+nav a:hover {
+    color: #a78bfa;
+}
+
+.hero {
+    min-height: 520px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 70px 8%;
+    background: radial-gradient(circle at 80%, #25205e, #080b1b 60%);
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.tag {
+    color: #38bdf8;
+    letter-spacing: 3px;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.hero h1 {
+    font-size: 45px;
+    line-height: 1.3;
+    margin-bottom: 20px;
+}
+
+.hero h1 span {
+    color: #a78bfa;
+}
+
+.hero p {
+    color: #c3c8dc;
+    line-height: 1.8;
+}
+
+.btn, button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(90deg, #7c3aed, #2563eb);
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+button:hover, .btn:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+}
+
+.atom {
+    font-size: 180px;
+    color: #a78bfa;
+    text-shadow: 0 0 35px #7c3aed;
+}
+
+.section {
+    padding: 80px 8%;
+    text-align: center;
+}
+
+.section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.section > p:not(.tag) {
+    color: #b8bfd4;
+    line-height: 1.7;
+}
+
+.dark-section {
+    background: #10152b;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    margin-top: 40px;
+}
+
+.card, .gate-box, .quiz-box {
+    background: #171e3a;
+    padding: 28px;
+    border: 1px solid #39366c;
+    border-radius: 15px;
+    text-align: left;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-7px);
+    border-color: #a78bfa;
+}
+
+.card h3 {
+    color: #a78bfa;
+    margin-bottom: 15px;
+}
+
+.card p {
+    color: #c3c8dc;
+    line-height: 1.7;
+}
+
+.lab {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 70px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.sphere {
+    width: 190px;
+    height: 190px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 40px;
+    background: radial-gradient(circle at 30% 30%, #60a5fa, #4c1d95 65%, #080b1b);
+    box-shadow: 0 0 40px #7c3aed;
+}
+
+.controls {
+    width: 280px;
+    text-align: left;
+}
+
+.controls input {
+    width: 100%;
+    margin: 20px 0;
+    accent-color: #a78bfa;
+}
+
+.controls p {
+    margin-top: 10px;
+    color: #c3c8dc;
+}
+
+.gate-box {
+    max-width: 650px;
+    margin: 35px auto 0;
+    text-align: center;
+}
+
+.gate-box h3 {
+    color: #38bdf8;
+}
+
+.gate-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.entangle-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 40px;
+}
+
+.particle {
+    padding: 30px;
+    border-radius: 50%;
+    background: #4c1d95;
+    box-shadow: 0 0 25px #7c3aed;
+}
+
+.connection {
+    color: #38bdf8;
+    font-size: 35px;
+}
+
+.quiz-box {
+    max-width: 550px;
+    margin: 30px auto;
+}
+
+.quiz-box h3 {
+    margin-bottom: 20px;
+}
+
+.quiz-box button {
+    margin: 8px;
+}
+
+#quizResult, #score, #groverResult, #bellResult {
+    color: #38bdf8;
+    margin-top: 15px;
+}
+
+.small {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+footer {
+    text-align: center;
+    padding: 35px;
+    background: #070916;
+    color: #a78bfa;
+    line-height: 2;
+}
+
+@media(max-width: 700px) {
+    header {
+        justify-content: center;
+    }
+
+    nav {
+        justify-content: center;
+    }
+
+    .hero {
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 32px;
+    }
+
+    .atom {
+        font-size: 110px;
+    }
+
+    .section {
+        padding: 55px 6%;
+    }
+}

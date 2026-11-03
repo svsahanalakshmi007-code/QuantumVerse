@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumVerse | Explore Quantum Computing</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div class="logo">⚛ QuantumVerse</div>
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#learn">Learn</a>
+        <a href="#qubit">Qubit Lab</a>
+        <a href="#gates">Gate Simulator</a>
+        <a href="#entangle">Entanglement</a>
+        <a href="#algorithms">Algorithms</a>
+        <a href="#quiz">Quiz</a>
+    </nav>
+</header>
+
+<section class="hero" id="home">
+    <div class="hero-content">
+        <p class="tag">WELCOME TO THE QUANTUM WORLD</p>
+        <h1>Explore the Future of<br><span>Quantum Computing</span></h1>
+        <p>Discover qubits, quantum gates, superposition,
+           entanglement and powerful quantum algorithms.</p>
+        <a href="#learn" class="btn">Start Exploring →</a>
+    </div>
+    <div class="atom">⚛</div>
+</section>
+
+<section id="learn" class="section">
+    <p class="tag">START LEARNING</p>
+    <h2>Quantum Computing Basics</h2>
+    <div class="cards">
+        <div class="card">
+            <h3>⚛ Qubit</h3>
+            <p>A qubit is the basic unit of quantum information.
+            It can represent a combination of 0 and 1.</p>
+        </div>
+        <div class="card">
+            <h3>🌌 Superposition</h3>
+            <p>A quantum state can exist in a combination
+            of multiple possible states until measured.</p>
+        </div>
+        <div class="card">
+            <h3>🔗 Entanglement</h3>
+            <p>Two or more qubits can share connected
+            quantum states, even when separated.</p>
+        </div>
+        <div class="card">
+            <h3>📡 Measurement</h3>
+            <p>Measurement gives a classical result such
+            as 0 or 1 from a quantum state.</p>
+        </div>
+    </div>
+</section>
+
+<section id="qubit" class="section dark-section">
+    <p class="tag">INTERACTIVE EXPERIMENT</p>
+    <h2>Qubit Lab</h2>
+    <p>Adjust the slider to change the probability of measuring 0 or 1.</p>
+
+    <div class="lab">
+        <div class="sphere">|ψ⟩</div>
+        <div class="controls">
+            <label>Probability of |0⟩</label>
+            <input type="range" id="probability" min="0" max="100" value="50">
+            <h3 id="probValue">50%</h3>
+            <p id="zeroProb">P(0) = 50%</p>
+            <p id="oneProb">P(1) = 50%</p>
+            <button onclick="measureQubit()">Measure Qubit</button>
+            <h3 id="measurement">Measurement: Not measured</h3>
+        </div>
+    </div>
+</section>
+
+<section id="gates" class="section">
+    <p class="tag">QUANTUM OPERATIONS</p>
+    <h2>Quantum Gate Simulator</h2>
+    <p>Apply a gate and observe the simulated qubit state.</p>
+    <div class="gate-box">
+        <h3 id="gateState">Current State: |0⟩</h3>
+        <div class="gate-buttons">
+            <button onclick="applyGate('X')">X Gate</button>
+            <button onclick="applyGate('Y')">Y Gate</button>
+            <button onclick="applyGate('Z')">Z Gate</button>
+            <button onclick="applyGate('H')">H Gate</button>
+            <button onclick="resetGate()">Reset</button>
+        </div>
+        <p id="gateResult">Choose a gate to begin.</p>
+    </div>
+</section>
+
+<section id="entangle" class="section dark-section">
+    <p class="tag">CONNECTED QUANTUM STATES</p>
+    <h2>Entanglement Lab</h2>
+    <div class="entangle-box">
+        <div class="particle">Qubit A</div>
+        <div class="connection">⟷</div>
+        <div class="particle">Qubit B</div>
+    </div>
+    <p>Bell State: |Φ+⟩ = (|00⟩ + |11⟩) / √2</p>
+    <button onclick="measureBell()">Measure Bell State</button>
+    <h3 id="bellResult">Waiting for measurement...</h3>
+</section>
+
+<section id="algorithms" class="section">
+    <p class="tag">QUANTUM ALGORITHMS</p>
+    <h2>Explore Algorithms</h2>
+    <div class="cards">
+        <div class="card">
+            <h3>Grover's Algorithm</h3>
+            <p>Searches an unstructured database faster
+            than classical brute-force search in the ideal query model.</p>
+            <button onclick="runGrover()">Run Demo</button>
+            <p id="groverResult">Demo not started.</p>
+        </div>
+        <div class="card">
+            <h3>Shor's Algorithm</h3>
+            <p>A quantum algorithm designed to factor
+            large integers efficiently.</p>
+            <p class="small">Concept demonstration only.</p>
+        </div>
+    </div>
+</section>
+
+<section id="quiz" class="section dark-section">
+    <p class="tag">TEST YOUR KNOWLEDGE</p>
+    <h2>Quantum Quiz</h2>
+    <div class="quiz-box">
+        <h3 id="question">1. What is the basic unit of quantum information?</h3>
+        <div id="answers">
+            <button onclick="checkAnswer(0)">Bit</button>
+            <button onclick="checkAnswer(1)">Qubit</button>
+            <button onclick="checkAnswer(2)">Byte</button>
+        </div>
+        <h3 id="quizResult"></h3>
+        <button onclick="nextQuestion()">Next Question →</button>
+        <p id="score">Score: 0</p>
+    </div>
+</section>
+
+<footer>
+    <h3>⚛ QuantumVerse</h3>
+    <p>Explore • Experiment • Understand</p>
+    <p>Educational quantum simulation platform</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
